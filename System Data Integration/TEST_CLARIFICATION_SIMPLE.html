@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Clarification Flow</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .step { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #0066cc; }
+        .step h2 { margin-top: 0; color: #0066cc; }
+        button { background: #0066cc; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 16px; margin: 5px; }
+        button:hover { background: #0052a3; }
+        button.danger { background: #dc3545; }
+        button.danger:hover { background: #c82333; }
+        button.success { background: #28a745; }
+        button.success:hover { background: #218838; }
+        .result { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 4px; font-family: monospace; white-space: pre-wrap; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Clarification Flow</h1>
+    
+    <div class="step">
+        <h2>Step 0: Clear All Data (WAJIB!)</h2>
+        <p>Klik tombol ini DULU sebelum test!</p>
+        <button class="danger" onclick="clearAllData()">🗑️ CLEAR ALL DATA</button>
+        <div id="clear-result" class="result" style="display:none;"></div>
+    </div>
+
+    <div class="step">
+        <h2>Step 1: Open App</h2>
+        <button class="success" onclick="openApp()">🚀 Open App (http://localhost:3001)</button>
+    </div>
+
+    <div class="step">
+        <h2>Step 2: Manual Testing</h2>
+        <ol>
+            <li>Login sebagai <code>contributor1</code> / <code>password123</code></li>
+            <li>Submit fee data baru</li>
+            <li>Logout, login sebagai <code>validator1</code> / <code>password123</code></li>
+            <li>Klik "Clarify" pada data</li>
+            <li>Logout, login kembali sebagai <code>contributor1</code></li>
+            <li>Klik "Submit Clarification"</li>
+            <li><strong>CHECK:</strong> Status = "PENDING", Action = "Clarification Submitted"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Step 3: Verify Results</h2>
+        <p>Setelah submit clarification, yang HARUS terjadi:</p>
+        <ul>
+            <li>✅ Status badge: <span style="background:#ffc107;color:black;padding:4px 8px;border-radius:4px;">PENDING</span></li>
+            <li>✅ Action column: <span style="background:#17a2b8;color:white;padding:4px 8px;border-radius:4px;">⏳ Clarification Submitted</span></li>
+        </ul>
+        <p>Jika masih menunjukkan "NEEDS_CLARIFICATION", berarti data lama masih ada!</p>
+    </div>
+
+    <div class="step">
+        <h2>Debug: Check Current Data</h2>
+        <button onclick="checkData()">📊 Check Data in Console</button>
+        <div id="data-result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            el.style.display = 'block';
+            el.className = 'result ' + type;
+            el.textContent = message;
+        }
+
+        function clearAllData() {
+            log('clear-result', 'Clearing all data...', 'warning');
+            
+            setTimeout(() => {
+                // Clear localStorage
+                localStorage.clear();
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                
+                // Clear cookies
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                
+                log('clear-result', '✅ ALL DATA CLEARED!\n\nSekarang klik "Open App" untuk mulai test.', 'success');
+            }, 500);
+        }
+
+        function openApp() {
+            window.open('http://localhost:3001', '_blank');
+        }
+
+        function checkData() {
+            const result = {
+                localStorage: {},
+                sessionStorage: {},
+                cookies: document.cookie
+            };
+            
+            // Get all localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    result.localStorage[key] = JSON.parse(localStorage.getItem(key));
+                } catch (e) {
+                    result.localStorage[key] = localStorage.getItem(key);
+                }
+            }
+            
+            // Get all sessionStorage
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                try {
+                    result.sessionStorage[key] = JSON.parse(sessionStorage.getItem(key));
+                } catch (e) {
+                    result.sessionStorage[key] = sessionStorage.getItem(key);
+                }
+            }
+            
+            console.log('=== CURRENT DATA ===');
+            console.log('localStorage:', result.localStorage);
+            console.log('sessionStorage:', result.sessionStorage);
+            console.log('cookies:', result.cookies);
+            console.log('===================');
+            
+            log('data-result', 'Data logged to console. Press F12 to see.', 'success');
+        }
+    </script>
+</body>
+</html>

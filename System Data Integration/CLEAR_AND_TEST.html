@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Data & Test Clarification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #c82333;
+        }
+        button.success {
+            background: #28a745;
+        }
+        button.success:hover {
+            background: #218838;
+        }
+        button.info {
+            background: #17a2b8;
+        }
+        button.info:hover {
+            background: #138496;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        .success-msg {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #155724;
+        }
+        .step {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧹 Clear Data & Test Clarification Flow</h1>
+        <p class="subtitle">Tool untuk membersihkan data dan test clarification flow dari awal</p>
+        
+        <div class="warning">
+            <strong>⚠️ Warning:</strong> Ini akan menghapus SEMUA data di localStorage termasuk login session. Anda harus login ulang setelah clear data.
+        </div>
+
+        <h2>Step 1: Clear All Data</h2>
+        <button onclick="clearAllData()">🗑️ Clear All Data</button>
+        <button class="info" onclick="checkCurrentData()">📊 Check Current Data</button>
+        
+        <h2>Step 2: Test Flow</h2>
+        <div class="step">
+            <h3>A. Login sebagai Contributor</h3>
+            <p>Username: <code>contributor1</code> | Password: <code>password123</code></p>
+            <button class="success" onclick="openApp()">🚀 Open App</button>
+        </div>
+
+        <div class="step">
+            <h3>B. Submit Fee Data</h3>
+            <p>Isi form dan submit data baru</p>
+        </div>
+
+        <div class="step">
+            <h3>C. Login sebagai Validator</h3>
+            <p>Username: <code>validator1</code> | Password: <code>password123</code></p>
+            <p>Klik "Clarify" pada data yang disubmit</p>
+        </div>
+
+        <div class="step">
+            <h3>D. Login kembali sebagai Contributor</h3>
+            <p>Klik "Submit Clarification" pada data dengan status NEEDS_CLARIFICATION</p>
+        </div>
+
+        <div class="step">
+            <h3>E. Verify di Contributor</h3>
+            <p>✅ Status badge: "CLARIFICATION_SUBMITTED"</p>
+            <p>✅ Action column: "⏳ Clarification Submitted"</p>
+        </div>
+
+        <div class="step">
+            <h3>F. Verify di Validator</h3>
+            <p>✅ Data muncul di Pending Validations</p>
+            <p>✅ Ada indicator "📝 Clarification provided"</p>
+            <p>✅ Clarification text visible di expandable row</p>
+        </div>
+
+        <div id="log" class="log" style="display: none;"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.style.display = 'block';
+            logDiv.textContent += message + '\n';
+        }
+
+        function clearLog() {
+            const logDiv = document.getElementById('log');
+            logDiv.textContent = '';
+            logDiv.style.display = 'none';
+        }
+
+        function clearAllData() {
+            clearLog();
+            
+            log('🧹 Clearing all localStorage data...');
+            
+            // Get all keys before clearing
+            const keys = Object.keys(localStorage);
+            log(`Found ${keys.length} items in localStorage:`);
+            keys.forEach(key => {
+                log(`  - ${key}`);
+            });
+            
+            // Clear everything
+            localStorage.clear();
+            
+            log('\n✅ All data cleared!');
+            log('\n📝 Next steps:');
+            log('1. Click "Open App" button');
+            log('2. Login as contributor1');
+            log('3. Submit new fee data');
+            log('4. Login as validator1');
+            log('5. Request clarification');
+            log('6. Login as contributor1');
+            log('7. Submit clarification');
+            log('8. Verify status changes to CLARIFICATION_SUBMITTED');
+            
+            setTimeout(() => {
+                if (confirm('Data cleared! Open app now?')) {
+                    openApp();
+                }
+            }, 1000);
+        }
+
+        function checkCurrentData() {
+            clearLog();
+            
+            log('📊 Checking current localStorage data...\n');
+            
+            const keys = Object.keys(localStorage);
+            
+            if (keys.length === 0) {
+                log('✅ localStorage is empty (clean state)');
+                return;
+            }
+            
+            log(`Found ${keys.length} items:\n`);
+            
+            keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                log(`${key}:`);
+                
+                try {
+                    const parsed = JSON.parse(value);
+                    log(JSON.stringify(parsed, null, 2));
+                } catch (e) {
+                    log(value);
+                }
+                
+                log('\n---\n');
+            });
+        }
+
+        function openApp() {
+            // Open the app in a new tab
+            window.open('http://localhost:3001', '_blank');
+        }
+
+        // Check on load
+        window.onload = function() {
+            const keys = Object.keys(localStorage);
+            if (keys.length > 0) {
+                log(`⚠️ Found ${keys.length} items in localStorage. Consider clearing before testing.`);
+            } else {
+                log('✅ localStorage is clean. Ready to test!');
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CLEAR DATA - Klik Tombol Ini!</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #856404;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .big-button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 30px 60px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.4);
+            transition: all 0.3s;
+        }
+        .big-button:hover {
+            background: #c82333;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(220, 53, 69, 0.6);
+        }
+        .big-button:active {
+            transform: translateY(0);
+        }
+        .open-button {
+            background: #28a745;
+            padding: 20px 40px;
+            font-size: 20px;
+            margin: 10px;
+        }
+        .open-button:hover {
+            background: #218838;
+        }
+        .result {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            display: none;
+        }
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .steps {
+            text-align: left;
+            background: #e7f3ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .steps h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        .steps ol {
+            margin-left: 20px;
+        }
+        .steps li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 CLEAR DATA</h1>
+        
+        <div class="warning">
+            ⚠️ KLIK TOMBOL INI DULU SEBELUM TEST!
+        </div>
+
+        <button class="big-button" onclick="clearAllData()">
+            🗑️ CLEAR ALL DATA
+        </button>
+
+        <div id="result" class="result"></div>
+
+        <div class="steps">
+            <h3>📋 Setelah Clear Data:</h3>
+            <ol>
+                <li>Klik tombol "Open App" di bawah</li>
+                <li>Login sebagai <code>contributor1</code></li>
+                <li>Submit fee data BARU</li>
+                <li>Login sebagai <code>validator1</code></li>
+                <li>Request clarification</li>
+                <li>Login sebagai <code>contributor1</code></li>
+                <li>Submit clarification</li>
+                <li><strong>CHECK: Status = PENDING, Action = Clarification Submitted</strong></li>
+            </ol>
+        </div>
+
+        <button class="big-button open-button" onclick="openApp()" style="display:none;" id="openBtn">
+            🚀 OPEN APP
+        </button>
+    </div>
+
+    <script>
+        function clearAllData() {
+            const resultDiv = document.getElementById('result');
+            const openBtn = document.getElementById('openBtn');
+            
+            resultDiv.className = 'result show';
+            resultDiv.innerHTML = '⏳ Clearing data...';
+            
+            setTimeout(() => {
+                try {
+                    // Clear localStorage
+                    localStorage.clear();
+                    console.log('✅ localStorage cleared');
+                    
+                    // Clear sessionStorage
+                    sessionStorage.clear();
+                    console.log('✅ sessionStorage cleared');
+                    
+                    // Clear cookies
+                    document.cookie.split(";").forEach(function(c) { 
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                    });
+                    console.log('✅ Cookies cleared');
+                    
+                    resultDiv.className = 'result show success';
+                    resultDiv.innerHTML = `
+✅ ALL DATA CLEARED!
+
+localStorage: CLEARED
+sessionStorage: CLEARED
+cookies: CLEARED
+
+Sekarang klik tombol "OPEN APP" di bawah untuk mulai test!
+                    `;
+                    
+                    openBtn.style.display = 'inline-block';
+                    
+                } catch (error) {
+                    resultDiv.className = 'result show';
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.color = '#721c24';
+                    resultDiv.innerHTML = '❌ Error: ' + error.message;
+                }
+            }, 500);
+        }
+
+        function openApp() {
+            window.open('http://localhost:3001', '_blank');
+        }
+    </script>
+</body>
+</html>
