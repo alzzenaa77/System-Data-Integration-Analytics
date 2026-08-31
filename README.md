@@ -1,7 +1,7 @@
 ## **MUC: System Data Integration & Analytics** <br />
 Business Development and  System Data Integration & Analytics Adhoc Intern | Jan - Mar 2026 <br />
 
-**Used for:** \n
+**Used for:** <br />
 - Integrated multi-source business data to benchmark competitors and drive market positioning. <br />
 - Translated business needs into data-driven user flows for market benchmarking. <br />
 
